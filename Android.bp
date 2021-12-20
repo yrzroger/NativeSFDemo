@@ -1,0 +1,39 @@
+cc_defaults {
+    name: "NativeSFDemo_defaults",
+
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wunused",
+        "-Wunreachable-code",
+    ],
+
+    shared_libs: [
+        "libbase",
+        "libbinder",
+        "libcutils",
+        "liblog",
+        "libutils",
+        "libui",
+        "libgui",
+        "libEGL",
+        "libGLESv1_CM",
+    ],
+}
+
+// NativeSFDemo executable
+// =========================================================
+
+cc_binary {
+    name: "NativeSFDemo",
+    defaults: ["NativeSFDemo_defaults"],
+    srcs: [
+        "NativeSurfaceWrapper.cpp",
+        "main_NativeSFDemo.cpp",
+    ],
+
+    cflags: [
+        "-Wno-deprecated-declarations",
+    ],
+}
+
