@@ -10,5 +10,6 @@
 
 效果展示：
 红色->蓝色->绿色背景交替展示
-https://user-images.githubusercontent.com/18068017/146720840-33079c13-4c66-4f99-8b0a-5923f8a16148.mp4
+
+![puan0-iz683](https://user-images.githubusercontent.com/18068017/146721508-e78d69ca-0e93-4ae6-b76a-94a7c62b5bc3.gif)
 
