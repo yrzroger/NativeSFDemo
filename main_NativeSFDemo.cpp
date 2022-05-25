@@ -95,8 +95,8 @@ int drawNativeSurface(sp<NativeSurfaceWrapper> nativeSurface) {
     // 8. draw the ANativeWindow
     while(!mQuit) {
         // 9. dequeue a buffer
-        int hwcFD = -1;
-        err = nativeWindow->dequeueBuffer(nativeWindow, &nativeBuffer, &hwcFD);
+        int releaseFenceFd = -1;
+        err = nativeWindow->dequeueBuffer(nativeWindow, &nativeBuffer, &releaseFenceFd);
         if (err != NO_ERROR) {
             ALOGE("error: dequeueBuffer failed: %s (%d)",
                     strerror(-err), -err);
@@ -104,8 +104,8 @@ int drawNativeSurface(sp<NativeSurfaceWrapper> nativeSurface) {
         }
 
         // 10. make sure really control the dequeued buffer
-        sp<Fence> hwcFence(new Fence(hwcFD));
-        int waitResult = hwcFence->waitForever("dequeueBuffer_EmptyNative");
+        sp<Fence> releaseFence(new Fence(releaseFenceFd));
+        int waitResult = releaseFence->waitForever("dequeueBuffer_EmptyNative");
         if (waitResult != OK) {
             ALOGE("dequeueBuffer_EmptyNative: Fence::wait returned an error: %d", waitResult);
             break;
@@ -135,8 +135,8 @@ int drawNativeSurface(sp<NativeSurfaceWrapper> nativeSurface) {
         }
 
         // 13. queue the buffer to display
-        int gpuFD = -1;
-        err = nativeWindow->queueBuffer(nativeWindow, buf->getNativeBuffer(), gpuFD);
+        int acquireFenceFd = -1;
+        err = nativeWindow->queueBuffer(nativeWindow, buf->getNativeBuffer(), acquireFenceFd);
         if (err != NO_ERROR) {
             ALOGE("error: queueBuffer failed: %s (%d)", strerror(-err), -err);
             break;
