@@ -5,6 +5,8 @@
 #ifndef SURFACE_WRAPPER_H
 #define SURFACE_WRAPPER_H
 
+#include <gui/BLASTBufferQueue.h>
+#include <gui/IGraphicBufferProducer.h>
 #include <gui/Surface.h>
 #include <gui/SurfaceControl.h>
 #include <system/window.h>
@@ -19,8 +21,7 @@ public:
 
     virtual void onFirstRef();
 
-    // Retrieves a handle to the window.
-    sp<ANativeWindow>  getSurface() const;
+    void setUpProducer(sp<IGraphicBufferProducer>& producer);
 
     int width() { return mWidth; }
     int height() { return mHeight; }
@@ -29,7 +30,7 @@ private:
     DISALLOW_COPY_AND_ASSIGN(NativeSurfaceWrapper);
     ui::Size limitSurfaceSize(int width, int height) const;
 
-    sp<SurfaceControl> mSurfaceControl;
+    sp<BLASTBufferQueue> mBlastBufferQueue;
     int mWidth;
     int mHeight;
     String8 mName;

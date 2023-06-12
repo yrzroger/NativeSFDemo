@@ -47,16 +47,24 @@ void NativeSurfaceWrapper::onFirstRef() {
     SurfaceComposerClient::Transaction{}
             .setLayer(surfaceControl, std::numeric_limits<int32_t>::max())
             .show(surfaceControl)
+            //.setBackgroundColor(surfaceControl, half3{0, 0, 0}, 1.0f, ui::Dataspace::UNKNOWN) // black background
+            .setAlpha(surfaceControl, 1.0f)
             .apply();
 
-    mSurfaceControl = surfaceControl;
     mWidth = resolution.getWidth();
     mHeight = resolution.getHeight();
+
+    // create BLASTBufferQueue instance 
+    mBlastBufferQueue = new BLASTBufferQueue("DemoBLASTBufferQueue", surfaceControl, 
+                                             resolution.getWidth(), resolution.getHeight(),
+                                             PIXEL_FORMAT_RGBA_8888);
 }
 
-sp<ANativeWindow> NativeSurfaceWrapper::getSurface() const {
-    sp<ANativeWindow> anw = mSurfaceControl->getSurface();
-    return anw;
+void NativeSurfaceWrapper::setUpProducer(sp<IGraphicBufferProducer>& producer) {
+    producer = mBlastBufferQueue->getIGraphicBufferProducer();
+    producer->setMaxDequeuedBufferCount(2);
+    IGraphicBufferProducer::QueueBufferOutput qbOutput;
+    producer->connect(new StubProducerListener, NATIVE_WINDOW_API_CPU, false, &qbOutput);
 }
 
 ui::Size NativeSurfaceWrapper::limitSurfaceSize(int width, int height) const {
