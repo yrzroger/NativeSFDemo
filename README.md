@@ -1,8 +1,8 @@
 ### NativeSFDemo
-基于Android图形显示系统结构的Native演示小程序
+基于Android Graphics显示系统APIs开发的Native演示小程序
 
 #### 详细说明
-参见文章：[Android 12(S) 图像显示系统 - 示例应用（二）](https://www.cnblogs.com/roger-yu/p/15707940.html)
+参见文章：关注公众号 "Android元宇宙"，图形图像专栏获取程序解读
 
 #### 使用方法
 1. 下载代码放到android源码目录下；
