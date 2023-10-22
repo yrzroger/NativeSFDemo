@@ -14,8 +14,8 @@
 
 namespace android {
 
-NativeSurfaceWrapper::NativeSurfaceWrapper(const String8& name) 
-    : mName(name) {}
+NativeSurfaceWrapper::NativeSurfaceWrapper(const String8& name, uint32_t layerStack) 
+    : mName(name), mLayerStack(layerStack) {}
 
 void NativeSurfaceWrapper::onFirstRef() {
     sp<SurfaceComposerClient> surfaceComposerClient = new SurfaceComposerClient;
@@ -47,8 +47,9 @@ void NativeSurfaceWrapper::onFirstRef() {
     SurfaceComposerClient::Transaction{}
             .setLayer(surfaceControl, std::numeric_limits<int32_t>::max())
             .show(surfaceControl)
-            //.setBackgroundColor(surfaceControl, half3{0, 0, 0}, 1.0f, ui::Dataspace::UNKNOWN) // black background
+            .setBackgroundColor(surfaceControl, half3{0, 0, 0}, 1.0f, ui::Dataspace::UNKNOWN) // black background
             .setAlpha(surfaceControl, 1.0f)
+            .setLayerStack(surfaceControl, mLayerStack)
             .apply();
 
     mWidth = resolution.getWidth();
@@ -58,6 +59,7 @@ void NativeSurfaceWrapper::onFirstRef() {
     mBlastBufferQueue = new BLASTBufferQueue("DemoBLASTBufferQueue", surfaceControl, 
                                              resolution.getWidth(), resolution.getHeight(),
                                              PIXEL_FORMAT_RGBA_8888);
+    mSurfaceControl = surfaceControl;
 }
 
 void NativeSurfaceWrapper::setUpProducer(sp<IGraphicBufferProducer>& producer) {
