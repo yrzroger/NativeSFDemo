@@ -5,9 +5,10 @@
 #define LOG_TAG "NativeSurfaceWrapper"
 
 #include <android-base/properties.h>
-#include <gui/ISurfaceComposerClient.h>
+#include <android/gui/ISurfaceComposerClient.h>
 #include <gui/Surface.h>
 #include <gui/SurfaceComposerClient.h>
+#include <ui/DisplayState.h>
 #include <utils/Log.h>
 
 #include "NativeSurfaceWrapper.h"
@@ -18,22 +19,45 @@ NativeSurfaceWrapper::NativeSurfaceWrapper(const String8& name, uint32_t layerSt
     : mName(name), mLayerStack(layerStack) {}
 
 void NativeSurfaceWrapper::onFirstRef() {
+    // create & init SurfaceComposerClient
     sp<SurfaceComposerClient> surfaceComposerClient = new SurfaceComposerClient;
     status_t err = surfaceComposerClient->initCheck();
-    if (err != NO_ERROR) {
+    if (err != OK) {
         ALOGD("SurfaceComposerClient::initCheck error: %#x\n", err);
         return;
     }
-
-    // Get main display parameters.
-    sp<IBinder> displayToken = SurfaceComposerClient::getInternalDisplayToken();
-    if (displayToken == nullptr)
+    // get ID for any displays
+    const std::vector<PhysicalDisplayId> ids = SurfaceComposerClient::getPhysicalDisplayIds();
+    if (ids.empty()) {
+        ALOGE("Failed to get ID for any displays\n");
         return;
+    }
+    // get display information
+    sp<IBinder> displayToken = nullptr;
+    for (const auto id : ids) {
+        displayToken = SurfaceComposerClient::getPhysicalDisplayToken(id);
+        if (displayToken != nullptr) {
+            ui::DisplayState ds;
+            err = SurfaceComposerClient::getDisplayState(displayToken, &ds);
+            if(err == OK && ds.layerStack.id == mLayerStack) {
+                break;
+            }
+        }
+    }
 
+    // default -- display 0 is used
+    if (displayToken == nullptr) {
+        displayToken = SurfaceComposerClient::getPhysicalDisplayToken(ids.front());
+        mLayerStack = 0;
+        if (displayToken == nullptr) {
+            ALOGE("Failed to getPhysicalDisplayToken");
+            return;
+        }
+    }
+    // get display's resolution
     ui::DisplayMode displayMode;
-    const status_t error =
-            SurfaceComposerClient::getActiveDisplayMode(displayToken, &displayMode);
-    if (error != NO_ERROR)
+    err = SurfaceComposerClient::getActiveDisplayMode(displayToken, &displayMode);
+    if (err != OK)
         return;
 
     ui::Size resolution = displayMode.resolution;
@@ -47,12 +71,12 @@ void NativeSurfaceWrapper::onFirstRef() {
     SurfaceComposerClient::Transaction{}
             .setLayer(surfaceControl, std::numeric_limits<int32_t>::max())
             .show(surfaceControl)
-            .setLayerStack(surfaceControl, mLayerStack)
+            .setLayerStack(surfaceControl, ui::LayerStack::fromValue(mLayerStack))
             .apply();
 
-    mSurfaceControl = surfaceControl;
     mWidth = resolution.getWidth();
     mHeight = resolution.getHeight();
+    mSurfaceControl = surfaceControl;
 }
 
 sp<ANativeWindow> NativeSurfaceWrapper::getSurface() const {
