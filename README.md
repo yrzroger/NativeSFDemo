@@ -7,7 +7,11 @@
 
 
 #### 分支
-main、main_bbq两个分支，提供了两种不同的写法。
+main : 基于Android 12平台开发，采用旧有的native_window_xxxx api写作方式；
+main_bbq : 基于Android 12平台开发，采用BLASTBufferQueue写作方式；
+android_u ：基于Android 14平台开发，采用旧有的native_window_xxxx api写作方式；
+android_u_bbq ：基于Android 14平台开发，采用BLASTBufferQueue写作方式；
+
 
 #### 使用方法
 1. 下载代码放到android源码目录下；
