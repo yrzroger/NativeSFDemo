@@ -16,7 +16,7 @@ namespace android {
 
 class NativeSurfaceWrapper : public RefBase {
 public:
-    NativeSurfaceWrapper(const String8& name, uint32_t layerStack=0);
+    NativeSurfaceWrapper(const String8& name, uint32_t layerStack = 0);
     virtual ~NativeSurfaceWrapper() {}
 
     virtual void onFirstRef();
