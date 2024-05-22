@@ -7,10 +7,14 @@
 
 
 #### 分支
-main、main_bbq两个分支，提供了两种不同的写法。
+main : 基于Android 12平台开发，采用旧有的native_window_xxxx api写作方式  
+main_bbq : 基于Android 12平台开发，采用BLASTBufferQueue写作方式  
+android_u ：基于Android 14平台开发，采用旧有的native_window_xxxx api写作方式  
+android_u_bbq ：基于Android 14平台开发，采用BLASTBufferQueue写作方式  
+
 
 #### 使用方法
-1. 下载代码放到android源码目录下；
+1. 下载代码放到android源码目录下
 2. 执行mm编译获得可执行档NativeSFDemo
 3. adb push NativeSFDemo /system/bin/
 4. adb shell NativeSFDemo 运行程序
@@ -26,3 +30,4 @@ main、main_bbq两个分支，提供了两种不同的写法。
 2. 执行adb shell NativeSFDemo -d layerStack，这样就可以显示到指定的屏幕上
 
 ![录制_2023_10_22_15_54_34_808](https://github.com/yrzroger/NativeSFDemo/assets/18068017/2d1f0c41-7ac9-4dec-a887-c8d38b2bed7d)
+
