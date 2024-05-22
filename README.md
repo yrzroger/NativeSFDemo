@@ -7,14 +7,14 @@
 
 
 #### 分支
-main : 基于Android 12平台开发，采用旧有的native_window_xxxx api写作方式；
-main_bbq : 基于Android 12平台开发，采用BLASTBufferQueue写作方式；
-android_u ：基于Android 14平台开发，采用旧有的native_window_xxxx api写作方式；
-android_u_bbq ：基于Android 14平台开发，采用BLASTBufferQueue写作方式；
+main : 基于Android 12平台开发，采用旧有的native_window_xxxx api写作方式  
+main_bbq : 基于Android 12平台开发，采用BLASTBufferQueue写作方式  
+android_u ：基于Android 14平台开发，采用旧有的native_window_xxxx api写作方式  
+android_u_bbq ：基于Android 14平台开发，采用BLASTBufferQueue写作方式  
 
 
 #### 使用方法
-1. 下载代码放到android源码目录下；
+1. 下载代码放到android源码目录下
 2. 执行mm编译获得可执行档NativeSFDemo
 3. adb push NativeSFDemo /system/bin/
 4. adb shell NativeSFDemo 运行程序
