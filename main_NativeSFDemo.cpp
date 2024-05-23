@@ -114,7 +114,7 @@ int drawNativeSurface(sp<NativeSurfaceWrapper> nativeSurface) {
 
         sp<GraphicBuffer> buf(GraphicBuffer::from(nativeBuffer));
 
-        // 11. Fill the buffer with black
+        // 11. call lock to get the virtual address of this buffer
         uint8_t* img = nullptr;
         err = buf->lock(GRALLOC_USAGE_SW_WRITE_OFTEN, (void**)(&img));
         if (err != NO_ERROR) {
@@ -122,7 +122,7 @@ int drawNativeSurface(sp<NativeSurfaceWrapper> nativeSurface) {
             break;
         }
 
-        //12. Draw the window
+        //12. fill buffer with RGB data
         countFrame = (countFrame+1)%3;
         fillRGBA8Buffer(img, nativeSurface->width(), nativeSurface->height(), buf->getStride(),
                         countFrame == 0 ? 255 : 0,
